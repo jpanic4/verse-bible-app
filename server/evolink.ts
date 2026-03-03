@@ -84,6 +84,9 @@ export async function createSongTask(req: GenerateSongRequest & { forceNew?: boo
 
   if (!response.ok) {
     const errorText = await response.text();
+    if (response.status === 402 || errorText.includes("insufficient_quota")) {
+      throw new Error("Song generation is temporarily unavailable — the music service credits have been used up. Please try again later.");
+    }
     throw new Error(`Evolink API error: ${response.status} - ${errorText}`);
   }
 

@@ -124,7 +124,7 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
       try {
         await Audio.setAudioModeAsync({
           playsInSilentModeIOS: true,
-          staysActiveInBackground: false,
+          staysActiveInBackground: true,
         });
 
         const baseUrl = getApiUrl();

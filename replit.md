@@ -51,6 +51,7 @@ Preferred communication style: Simple, everyday language.
 - **Animations**: `react-native-reanimated` for entrance animations (`FadeInDown`, `FadeIn`), and shared value shimmer on skeleton loading cards.
 - **Fonts**: Lora (serif, used for verse text) and Inter (sans-serif, used for UI labels) via `@expo-google-fonts`.
 - **Haptics**: `expo-haptics` used on interactive controls (save, search, theme press) on native platforms only (guarded with `Platform.OS !== 'web'`).
+- **Background Audio**: `staysActiveInBackground: true` enabled in both `AudioPlayerContext` and Sing It player; iOS `UIBackgroundModes: ["audio"]` and Android foreground service permissions configured in `app.json`.
 - **Platform handling**: The codebase is cross-platform (iOS, Android, Web). Platform-specific branches handle tab bar styling (blur on iOS, solid on web/Android), inset calculations, and keyboard-aware scroll view (`KeyboardAwareScrollViewCompat` falls back to a standard `ScrollView` on web).
 - **Error Handling**: A class-based `ErrorBoundary` wraps the app, showing a `ErrorFallback` UI with a restart option via `expo`'s `reloadAppAsync`.
 

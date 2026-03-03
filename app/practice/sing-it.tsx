@@ -46,6 +46,7 @@ export default function SingItScreen() {
   const [positionMs, setPositionMs] = useState(0);
   const [durationMs, setDurationMs] = useState(0);
   const [isRepeat, setIsRepeat] = useState(false);
+  const [verseExpanded, setVerseExpanded] = useState(false);
   const soundRef = useRef<Audio.Sound | null>(null);
   const webAudioRef = useRef<HTMLAudioElement | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -310,7 +311,7 @@ export default function SingItScreen() {
           return;
         }
 
-        await Audio.setAudioModeAsync({ playsInSilentModeIOS: true, staysActiveInBackground: false });
+        await Audio.setAudioModeAsync({ playsInSilentModeIOS: true, staysActiveInBackground: true });
         const { sound } = await Audio.Sound.createAsync(
           { uri: audioUrl },
           { shouldPlay: true, isLooping: isRepeatRef.current }
@@ -354,10 +355,23 @@ export default function SingItScreen() {
         <View style={{ width: 24 }} />
       </View>
 
-      <View style={styles.versePreview}>
-        <Text style={styles.previewText} numberOfLines={3}>{text}</Text>
-        <Text style={styles.previewRef}>{reference}</Text>
-      </View>
+      <Pressable
+        onPress={() => {
+          setVerseExpanded(!verseExpanded);
+          if (Platform.OS !== "web") Haptics.selectionAsync();
+        }}
+        style={styles.versePreview}
+        testID="verse-preview"
+      >
+        <Text style={styles.previewText} numberOfLines={verseExpanded ? undefined : 3}>{text}</Text>
+        <View style={styles.previewFooter}>
+          <Text style={styles.previewRef}>{reference}</Text>
+          <View style={styles.expandHint}>
+            <Ionicons name={verseExpanded ? "chevron-up" : "chevron-down"} size={14} color={Colors.light.accentLight} />
+            <Text style={styles.expandHintText}>{verseExpanded ? "Less" : "More"}</Text>
+          </View>
+        </View>
+      </Pressable>
 
       <Text style={styles.sectionTitle}>Choose a genre</Text>
       <View style={styles.genreGrid}>
@@ -493,6 +507,17 @@ export default function SingItScreen() {
         </Animated.View>
       )}
 
+      {status === "ready" && audioUrl && text && (
+        <Animated.View entering={FadeInDown.duration(400).delay(200)} style={styles.lyricsSection}>
+          <View style={styles.lyricsHeader}>
+            <Ionicons name="musical-notes-outline" size={16} color={Colors.light.accent} />
+            <Text style={styles.lyricsHeaderText}>Lyrics</Text>
+          </View>
+          <Text style={styles.lyricsText}>{text}</Text>
+          <Text style={styles.lyricsRef}>{reference}</Text>
+        </Animated.View>
+      )}
+
       {status === "error" && (
         <Animated.View entering={FadeIn.duration(300)} style={styles.errorCard}>
           <Ionicons name="alert-circle-outline" size={28} color="#D9534F" />
@@ -518,7 +543,23 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   previewText: { fontFamily: "Lora_400Regular", fontSize: 15, lineHeight: 24, color: "#FAF6F0" },
-  previewRef: { fontFamily: "Inter_600SemiBold", fontSize: 12, color: Colors.light.accentLight, marginTop: 10, letterSpacing: 0.5 },
+  previewFooter: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    justifyContent: "space-between" as const,
+    marginTop: 10,
+  },
+  previewRef: { fontFamily: "Inter_600SemiBold", fontSize: 12, color: Colors.light.accentLight, letterSpacing: 0.5 },
+  expandHint: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 3,
+  },
+  expandHintText: {
+    fontFamily: "Inter_400Regular",
+    fontSize: 11,
+    color: Colors.light.accentLight,
+  },
   sectionTitle: {
     fontFamily: "Inter_600SemiBold", fontSize: 14, color: Colors.light.textSecondary,
     marginBottom: 12, letterSpacing: 0.5, textTransform: "uppercase" as const,
@@ -639,4 +680,40 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.surface, borderWidth: 1, borderColor: Colors.light.border,
   },
   retryText: { fontFamily: "Inter_600SemiBold", fontSize: 13, color: Colors.light.accent },
+  lyricsSection: {
+    marginTop: 20,
+    backgroundColor: Colors.light.surface,
+    borderRadius: 16,
+    padding: 20,
+    borderLeftWidth: 3,
+    borderLeftColor: Colors.light.accent,
+    borderWidth: 1,
+    borderColor: Colors.light.border,
+  },
+  lyricsHeader: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 6,
+    marginBottom: 14,
+  },
+  lyricsHeaderText: {
+    fontFamily: "Inter_600SemiBold",
+    fontSize: 13,
+    color: Colors.light.accent,
+    letterSpacing: 0.5,
+    textTransform: "uppercase" as const,
+  },
+  lyricsText: {
+    fontFamily: "Lora_400Regular",
+    fontSize: 16,
+    lineHeight: 28,
+    color: Colors.light.text,
+  },
+  lyricsRef: {
+    fontFamily: "Inter_600SemiBold",
+    fontSize: 12,
+    color: Colors.light.textSecondary,
+    marginTop: 14,
+    letterSpacing: 0.5,
+  },
 });
