@@ -47,7 +47,8 @@ Preferred communication style: Simple, everyday language.
   3. Song cache for Evolink-generated songs (prefix `song_cache_`).
   4. SRS review data (key `srs_data`) — per-verse interval, ease factor, repetition count, and next review date.
   5. Streak/XP data (key `streak_data`) — current/longest streak, total/today XP, activity counts.
-- **Verse Pre-caching**: On first app launch, `precacheStaticVerses()` (in `lib/bible-api.ts`) runs in the background to fetch and cache all ~108 unique verse references from themes and daily verses. Controlled by `verse_precache_done_v1` key in AsyncStorage. Fetches in batches of 5 to avoid overwhelming the ESV API. After the first launch, all theme/daily verse lookups are instant from local cache.
+- **Local Bible Storage**: The full ESV Bible (66 books, ~31,000 verses) is stored locally in `data/esv-bible.json` (4.0MB). All verse lookups first check this local file via `lib/local-bible.ts` before falling back to the ESV API. This means daily verses, themed collections, and most lookups work entirely offline.
+- **Verse Pre-caching**: On first app launch, `precacheStaticVerses()` (in `lib/bible-api.ts`) runs in the background to cache any verse references not in the local file into AsyncStorage. Controlled by `verse_precache_done_v1` key. With the full Bible now stored locally, pre-caching is mostly a no-op.
 - **Animations**: `react-native-reanimated` for entrance animations (`FadeInDown`, `FadeIn`), and shared value shimmer on skeleton loading cards.
 - **Fonts**: Lora (serif, used for verse text) and Inter (sans-serif, used for UI labels) via `@expo-google-fonts`.
 - **Haptics**: `expo-haptics` used on interactive controls (save, search, theme press) on native platforms only (guarded with `Platform.OS !== 'web'`).

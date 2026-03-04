@@ -16,8 +16,16 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
+function safeString(val: unknown): string {
+  if (typeof val === "string") return val;
+  if (Array.isArray(val)) return val[0] ?? "";
+  return "";
+}
+
 export default function ScrambleScreen() {
-  const { reference, text } = useLocalSearchParams<{ reference: string; text: string }>();
+  const params = useLocalSearchParams<{ reference: string; text: string }>();
+  const reference = safeString(params.reference);
+  const text = safeString(params.text);
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const webTopInset = Platform.OS === "web" ? 67 : 0;

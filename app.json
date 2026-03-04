@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Verse",
-    "slug": "verse-app",
+    "name": "SowTheWord",
+    "slug": "sowtheword",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "verse",
+    "scheme": "sowtheword",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -15,13 +15,15 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.verse.app",
+      "bundleIdentifier": "com.sowtheword.app",
       "infoPlist": {
-        "UIBackgroundModes": ["audio"]
+        "UIBackgroundModes": [
+          "audio"
+        ]
       }
     },
     "android": {
-      "package": "com.verse.app",
+      "package": "com.sowtheword.app",
       "permissions": [
         "FOREGROUND_SERVICE",
         "FOREGROUND_SERVICE_MEDIA_PLAYBACK"

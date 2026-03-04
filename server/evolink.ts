@@ -145,9 +145,19 @@ export async function getSongStatus(taskId: string): Promise<SongStatus> {
   }
 
   if (data.status === "failed" || data.status === "error") {
+    const rawError = data.error;
+    let errorMsg = "Song generation failed";
+    if (typeof rawError === "string") {
+      errorMsg = rawError;
+    } else if (rawError?.message) {
+      errorMsg = rawError.message;
+    }
+    if (errorMsg.includes("content_policy_violation") || errorMsg.includes("content rights")) {
+      errorMsg = "The music service couldn't generate this song due to content restrictions. Try a different verse or genre.";
+    }
     return {
       status: "failed",
-      error: data.error || "Song generation failed",
+      error: errorMsg,
     };
   }
 

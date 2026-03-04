@@ -475,8 +475,10 @@ export default function ChallengePlayScreen() {
           entering={SlideInRight.duration(350).springify()}
           style={styles.questionCard}
         >
-          <View style={styles.pointsBadge}>
-            <Text style={styles.pointsBadgeText}>{question.points} pts</Text>
+          <View style={styles.cardHeader}>
+            <View style={styles.pointsBadge}>
+              <Text style={styles.pointsBadgeText}>{question.points} pts</Text>
+            </View>
           </View>
           <Text style={styles.questionText}>{question.question}</Text>
         </Animated.View>
@@ -677,20 +679,19 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.oliveDark,
     borderRadius: 20,
     padding: 24,
-    paddingTop: 20,
+    paddingTop: 16,
     marginBottom: 20,
-    position: "relative" as const,
-    overflow: "visible" as const,
+  },
+  cardHeader: {
+    flexDirection: "row" as const,
+    justifyContent: "flex-end" as const,
+    marginBottom: 8,
   },
   pointsBadge: {
-    position: "absolute" as const,
-    top: 12,
-    right: 12,
     backgroundColor: "#E8A838",
     paddingHorizontal: 14,
     paddingVertical: 5,
     borderRadius: 20,
-    zIndex: 1,
   },
   pointsBadgeText: {
     fontFamily: "Inter_600SemiBold",

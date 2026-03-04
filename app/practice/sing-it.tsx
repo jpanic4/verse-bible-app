@@ -30,8 +30,16 @@ function getSongCacheKey(reference: string, genre: string): string {
 
 type Status = "idle" | "checking" | "generating" | "polling" | "ready" | "error";
 
+function safeString(val: unknown): string {
+  if (typeof val === "string") return val;
+  if (Array.isArray(val)) return val[0] ?? "";
+  return "";
+}
+
 export default function SingItScreen() {
-  const { reference, text } = useLocalSearchParams<{ reference: string; text: string }>();
+  const params = useLocalSearchParams<{ reference: string; text: string }>();
+  const reference = safeString(params.reference);
+  const text = safeString(params.text);
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const webTopInset = Platform.OS === "web" ? 67 : 0;
@@ -160,7 +168,8 @@ export default function SingItScreen() {
 
       if (data.error) {
         setStatus("error");
-        setErrorMsg(data.error);
+        const errVal = data.error;
+        setErrorMsg(typeof errVal === "string" ? errVal : errVal?.message || "Song generation failed");
         return;
       }
 
@@ -190,7 +199,8 @@ export default function SingItScreen() {
           } else if (statusData.status === "failed" || statusData.error) {
             if (pollRef.current) clearInterval(pollRef.current);
             setStatus("error");
-            setErrorMsg(statusData.error || "Song generation failed");
+            const errVal = statusData.error;
+            setErrorMsg(typeof errVal === "string" ? errVal : errVal?.message || "Song generation failed");
           } else if (attempts > 60) {
             if (pollRef.current) clearInterval(pollRef.current);
             setStatus("error");

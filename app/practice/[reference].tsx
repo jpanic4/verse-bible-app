@@ -14,12 +14,21 @@ const MODES = [
   { key: "sing-it", label: "Sing It", icon: "musical-notes-outline" as const, desc: "Generate a song from scripture" },
 ];
 
+function safeString(val: unknown): string {
+  if (typeof val === "string") return val;
+  if (Array.isArray(val)) return val[0] ?? "";
+  return "";
+}
+
 export default function PracticeModeSelector() {
-  const { reference, text, translation } = useLocalSearchParams<{
+  const params = useLocalSearchParams<{
     reference: string;
     text: string;
     translation: string;
   }>();
+  const reference = safeString(params.reference);
+  const text = safeString(params.text);
+  const translation = safeString(params.translation);
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const webTopInset = Platform.OS === "web" ? 67 : 0;
